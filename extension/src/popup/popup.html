@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Jeom</title>
+    <style>
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+        width: 280px;
+        margin: 0;
+        padding: 1rem 1.1rem 1.2rem;
+        background: #fbfaf6;
+        color: #1a1a1a;
+        font-size: 0.92rem;
+        line-height: 1.45;
+      }
+      body.dev { width: 420px; }
+      h1 { font-size: 1rem; margin: 0 0 0.6rem; }
+      button {
+        all: unset;
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.55rem 0.7rem;
+        background: #1a6f3c;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.92rem;
+        margin-bottom: 0.4rem;
+        box-sizing: border-box;
+      }
+      button:hover { background: #155a30; }
+      button[disabled] { background: #aaa; cursor: not-allowed; }
+      #open-prompt-lab-btn {
+        display: none;
+        background: #7a1f2d;
+      }
+      #open-prompt-lab-btn:hover { background: #5f1722; }
+      body.dev #open-prompt-lab-btn { display: block; }
+      a { color: #1a6f3c; text-decoration: none; font-size: 0.82rem; }
+      a:hover { text-decoration: underline; }
+      .row { margin-top: 0.5rem; }
+      .status { font-size: 0.78rem; color: #666; min-height: 1em; margin-top: 0.4rem; }
+      .status.err { color: #a23838; }
+      .hint { font-size: 0.78rem; color: #888; }
+      #trace-log {
+        display: none;
+        margin-top: 0.6rem;
+        padding: 0.5rem 0.6rem;
+        background: #1a1a1a;
+        color: #d8d4c4;
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 11px;
+        line-height: 1.4;
+        max-height: 320px;
+        overflow-y: auto;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      body.dev #trace-log { display: block; }
+      #trace-log .line { margin: 0; }
+      #trace-log .line.meta { color: #8a877a; }
+    </style>
+  </head>
+  <body>
+    <h1>Jeom</h1>
+    <button id="annotate-btn">Annotate again</button>
+    <button id="open-prompt-lab-btn">Open Prompt Lab</button>
+    <div class="status" id="status"></div>
+    <div id="trace-log"></div>
+    <div class="hint">
+      Reads the current page, generates per-sentence notes, and replaces
+      sentence-end periods with a burgundy dot. Hover a dot to read its note.
+    </div>
+    <div class="row">
+      <a href="#" id="open-options">Settings</a>
+    </div>
+    <script type="module" src="popup.ts"></script>
+  </body>
+</html>

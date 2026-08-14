@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Jeom Prompt Lab</title>
+    <link rel="stylesheet" href="./prompt-lab.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Prompt Lab</h1>
+        <p id="session-meta">Load a captured annotation session.</p>
+      </div>
+      <div class="topbar-controls">
+        <form id="load-url-form" class="url-loader">
+          <input
+            id="url-input"
+            type="url"
+            placeholder="https://example.com/article"
+            aria-label="Article URL"
+          />
+          <button id="load-url" type="submit">Load URL</button>
+        </form>
+        <select id="session-picker" aria-label="Captured sessions"></select>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="pane sentences-pane" aria-label="Fixed sentences">
+        <div class="pane-head">
+          <h2>Fixed Sentences</h2>
+          <span id="sentence-count"></span>
+        </div>
+        <div id="sentences"></div>
+      </section>
+
+      <section class="pane prompt-pane" aria-label="Prompt editor">
+        <div class="pane-head">
+          <h2>Final Note Prompt</h2>
+          <button id="reset-prompt" type="button">Reset</button>
+        </div>
+        <textarea id="prompt-editor" spellcheck="false"></textarea>
+        <div class="actions">
+          <button id="generate" type="button">Generate</button>
+          <button id="improve-prompt" type="button">Improve Prompt</button>
+          <span id="gold-count"></span>
+          <span id="status"></span>
+        </div>
+        <div id="improvement-result" class="improvement-result" hidden></div>
+      </section>
+
+      <section class="pane output-pane" aria-label="Generated notes">
+        <div class="pane-head">
+          <h2>Output</h2>
+          <span id="run-meta"></span>
+        </div>
+        <div id="output"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./prompt-lab.ts"></script>
+  </body>
+</html>

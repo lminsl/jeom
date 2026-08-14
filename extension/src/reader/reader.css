@@ -1,0 +1,184 @@
+/* Reader overlay styling. Shadow DOM means we can be specific without
+   fighting page CSS. */
+
+:host, .ra-root {
+  all: initial;
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  color: #1a1a1a;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ra-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 28, 28, 0.78);
+  z-index: 2147483647; /* max z-index */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 2rem 1rem 4rem;
+  font-family: ui-serif, Georgia, serif;
+}
+
+.ra-panel {
+  background: #fbfaf6;
+  width: min(720px, 100%);
+  border-radius: 8px;
+  padding: 2rem 2.5rem 3rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  font-size: 1.05rem;
+}
+
+.ra-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #e2dfd4;
+  padding-bottom: 0.6rem;
+}
+
+.ra-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.3;
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  color: #111;
+}
+
+.ra-close {
+  all: unset;
+  cursor: pointer;
+  font-size: 1.6rem;
+  color: #888;
+  padding: 0 0.4rem;
+  line-height: 1;
+  border-radius: 4px;
+}
+.ra-close:hover {
+  color: #111;
+  background: #f0ede5;
+}
+
+.ra-loader, .ra-error, .ra-warn {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.88rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  margin: 0.7rem 0;
+  line-height: 1.45;
+}
+.ra-loader {
+  background: #f3f0e6;
+  color: #5a5440;
+  border-left: 3px solid #b9b291;
+}
+.ra-error {
+  background: #fdeded;
+  color: #7a2222;
+  border-left: 3px solid #c84a4a;
+}
+.ra-warn {
+  background: #fff5e0;
+  color: #6b4d10;
+  border-left: 3px solid #d49a2a;
+}
+
+.ra-stats {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: #888;
+  margin-bottom: 0.6rem;
+}
+
+.ra-body {
+  margin-top: 0.5rem;
+}
+
+.ra-para {
+  margin: 0 0 1rem 0;
+  font-size: 1.06rem;
+  line-height: 1.75;
+}
+
+.ra-sentence {
+  /* No special styling unless it has a note. */
+}
+.ra-sentence.ra-has-note {
+  /* Subtle hint that there's something here. */
+}
+
+.ra-period {
+  display: inline-block;
+  cursor: pointer;
+  color: #1a6f3c;
+  font-weight: 700;
+  border-radius: 3px;
+  padding: 0 1px;
+  user-select: none;
+  transition: background 0.12s, color 0.12s;
+}
+.ra-period:hover {
+  background: #d9ebe0;
+  color: #0e5128;
+}
+.ra-period-active {
+  background: #1a6f3c;
+  color: #ffffff;
+}
+.ra-period-synth {
+  /* Synthesized period when source has no trailing punctuation. */
+  font-size: 0.95em;
+  margin-left: 1px;
+}
+
+.ra-note {
+  display: none;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #234;
+  background: #eef5f0;
+  border-left: 3px solid #1a6f3c;
+  border-radius: 0 4px 4px 0;
+  padding: 0.45rem 0.7rem;
+  margin: 0.4rem 0 0.6rem;
+  font-style: normal;
+}
+.ra-note-shown {
+  display: block;
+}
+.ra-note-question {
+  font-weight: 500;
+}
+.ra-note-expansion {
+  display: none;
+  color: #345;
+}
+.ra-note-expansion-shown {
+  display: inline;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ra-overlay { background: rgba(15, 15, 15, 0.85); }
+  .ra-panel { background: #1f1d18; color: #e7e3d6; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); }
+  .ra-title { color: #f0eee4; }
+  .ra-header { border-color: #3a362c; }
+  .ra-close { color: #999; }
+  .ra-close:hover { color: #fff; background: #2c2924; }
+  .ra-loader { background: #2a2722; color: #c8c0a4; border-left-color: #6b6443; }
+  .ra-error { background: #3a1e1e; color: #f0bdbd; border-left-color: #a23838; }
+  .ra-stats { color: #8a8576; }
+  .ra-period { color: #5fc287; }
+  .ra-period:hover { background: #294933; color: #8be3a9; }
+  .ra-period-active { background: #5fc287; color: #1a1a1a; }
+  .ra-note {
+    background: #233028;
+    border-left-color: #5fc287;
+    color: #d9e7df;
+  }
+  .ra-note-expansion { color: #b8c8c0; }
+}

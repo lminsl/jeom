@@ -1,0 +1,46 @@
+# Jeom — manual smoke-test URLs.
+#
+# Run one:
+#   FAST=1 bun run test/e2e-insitu.ts '<url>'
+#
+# Run them all (sequential):
+#   while IFS= read -r url; do
+#     [[ "$url" =~ ^[[:space:]]*# || -z "$url" ]] && continue
+#     FAST=1 bun run test/e2e-insitu.ts "$url"
+#   done < test/smoke-urls.txt
+#
+# Add a URL here whenever you find a page the extension SHOULD work on —
+# either as a known-good regression anchor or as a tricky case that
+# previously broke (with a date + cause comment).
+
+# Known-good regression anchor
+https://blog.samaltman.com/what-i-wish-someone-had-told-me
+
+# Distill-template academic blog — revealed selector-LLM false-NONE
+# (2026-05-26). Fixed by prompt softening (62dbc59) + cache-read off (ac4bdd7).
+https://goombalab.github.io/blog/2024/mamba2-part1-model/
+
+# CSS-in-JS site (stitches.js-style atomic class names like
+# c-gqwkJN-iTKOFX-...). LLM picked a class-based selector that doesn't
+# match the live DOM; heuristic fallback (article/main) catches it
+# so the user-visible result is still ✅, but LLM call was wasted.
+# Pattern: revisit if we want the selector LLM to prefer semantic tags
+# (article/main) when class names look hash-generated (2026-05-26).
+https://rauno.me/craft/interaction-design
+
+# WSJ opinion / editorial typography dogfood case. Requires a real browser
+# session with access; fresh e2e Chrome hit WSJ/CloudFront protection and
+# selector refused the non-article page (2026-05-28).
+https://www.wsj.com/opinion/pope-leo-ai-manifesto-magnifica-humanitas-e19ac7ad?mod=hp_opin_pos_1
+
+# Abbreviation boundary regression — political titles (`Rep.`, `Sen.`)
+# should not become burgundy dots. Added after 2026-05-28 dogfood report.
+https://www.wbur.org/npr/770511350/reps-alexandria-ocasio-cortez-ilhan-omar-to-endorse-bernie-sanders-for-president
+
+# Abbreviation boundary regression — Latin abbreviation (`e.g.`) appears in
+# body prose. The internal period should not become a burgundy dot.
+https://plato.stanford.edu/entries/artificial-intelligence/
+
+# Abbreviation boundary regression — chained initials (`J. R. R.`) should
+# stay inside one sentence candidate.
+https://en.wikipedia.org/wiki/Tolkien_research

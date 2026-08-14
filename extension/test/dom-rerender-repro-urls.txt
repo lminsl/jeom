@@ -1,0 +1,25 @@
+# Jeom — public DOM-rerender repro URLs.
+#
+# These are NOT full in-situ article smoke tests. They are public pages where
+# a synthetic `.ra-dot[data-probe=jeom]` injected soon after DOMContentLoaded is
+# removed by host-page hydration/rerender. Use them to verify the failure class
+# behind "dots appear, then disappear" without spending LLM calls.
+#
+# Probe shape:
+#   1. page.goto(url, { waitUntil: "domcontentloaded" })
+#   2. append `.ra-dot[data-probe=jeom]` spans to text-heavy elements
+#   3. sample counts at 250ms, 750ms, 1.5s, 3s, 6s, 12s
+#
+# Added 2026-05-28 after public-site repro sweep.
+
+# Drops 12 -> 5 by 3s after DOMContentLoaded.
+https://www.theguardian.com/technology/artificialintelligenceai
+
+# Drops 12 -> 0 by 3s after DOMContentLoaded.
+https://www.semafor.com/vertical/tech
+
+# Drops 12 -> 0 by 12s after DOMContentLoaded.
+https://www.anthropic.com/news
+
+# Drops 3 -> 0 by 12s after DOMContentLoaded.
+https://supabase.com/blog

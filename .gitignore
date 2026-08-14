@@ -1,0 +1,51 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+.DS_Store
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+# Personal research / eval pipeline (not part of the extension build)
+prompts/
+annotation/
+experiments/
+references/
+research/
+
+# Personal dev/QA scripts under extension/test/ — keep only the e2e harnesses
+# and smoke-urls list as public test infra.
+extension/test/*
+!extension/test/e2e-insitu.ts
+!extension/test/e2e-popup-retry.ts
+!extension/test/e2e-prompt-lab.ts
+!extension/test/smoke-urls.txt
+!extension/test/dom-rerender-repro-urls.txt
+
+# Design exploration mockups (icon-source.svg kept for build regeneration)
+extension/design/mockups/
+
+# Extension dev artifacts
+extension/node_modules/
+extension/dist/
+extension/.cursor/
+
+extension/test-runs/
+.gstack/
+
+# Private working notes (kept locally, not published)
+.internal/
+CLAUDE.md
+AGENTS.md
+
+# codex CLI session continuity (local-only)
+.context/
+
+# Supabase CLI link metadata (local-only)
+supabase/.temp/

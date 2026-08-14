@@ -1,0 +1,4 @@
+export const DOGFOOD_SUPABASE_URL = "https://pwjikamzdmhmlifnrhhx.supabase.co";
+export const DOGFOOD_SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3amlrYW16ZG1obWxpZm5yaGh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDA4MzIsImV4cCI6MjA5NTQxNjgzMn0.PViaT8yt8-vNTjKIpv06OFun_aUsHtPUwyPcmxf8MsY";
+export const DOGFOOD_RELEASE_CHANNEL = "dogfood";
