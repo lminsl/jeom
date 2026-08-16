@@ -17,11 +17,13 @@
   <a href="LICENSE">Apache-2.0</a>
 </p>
 
-![A Jeom note beside a highlighted sentence in an article](docs/images/hover-note.png)
+![A Jeom note explains a Samuel Johnson allusion in a Wall Street Journal opinion article](docs/images/wsj-hover-note.png)
 
 Jeom is for readers who want to stay with a text—not skim around it. It adds
 context, allusions, and gentle interpretive prompts at the sentence level,
-without turning the article into a summary or a separate reading surface.
+without turning the article into a summary or a separate reading surface. In
+the example above, the note unpacks a Samuel Johnson allusion without pulling
+the reader out of the argument.
 
 ## The interaction
 
