@@ -1,6 +1,6 @@
 {
   "name": "jeom-extension",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "module": "src/background/service-worker.ts",
   "type": "module",
   "private": true,

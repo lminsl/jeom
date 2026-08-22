@@ -1,6 +1,12 @@
 /** Thin chrome.storage.local wrappers for typed access. */
 
-import type { LLMConfig } from "./selector-llm";
+import {
+  getProviderPreset,
+  isProviderId,
+  type LLMConfig,
+  type LLMProtocol,
+  type LLMAuth,
+} from "./provider-registry";
 
 export interface StoredConfig {
   /** Which render path to use after notes come back. */
@@ -21,26 +27,18 @@ export interface StoredConfig {
  *  user saves anything. See README "Install via your AI coding agent". */
 function envSeededLLM(): LLMConfig {
   const apiKey = import.meta.env.VITE_DEFAULT_API_KEY ?? "";
-  const provider = import.meta.env.VITE_DEFAULT_PROVIDER;
-  const model = import.meta.env.VITE_DEFAULT_MODEL ?? "";
-
-  if (provider === "openai") {
-    const m = model === "gpt-5" || model === "gpt-5-mini" ? model : "gpt-5-mini";
-    return { provider, model: m, apiKey };
-  }
-  if (provider === "anthropic-foundry") {
-    return {
-      provider,
-      model: model || "claude-opus-4-7",
-      apiKey,
-      endpoint: import.meta.env.VITE_DEFAULT_FOUNDRY_ENDPOINT ?? "",
-    };
-  }
-  const m =
-    model === "haiku" || model === "sonnet-4-6" || model === "opus-4-7"
-      ? model
-      : "haiku";
-  return { provider: "anthropic", model: m, apiKey };
+  const rawProvider = import.meta.env.VITE_DEFAULT_PROVIDER;
+  const provider = isProviderId(rawProvider) ? rawProvider : "openrouter";
+  const preset = getProviderPreset(provider);
+  const endpoint =
+    import.meta.env.VITE_DEFAULT_ENDPOINT ??
+    import.meta.env.VITE_DEFAULT_FOUNDRY_ENDPOINT;
+  return {
+    provider,
+    model: import.meta.env.VITE_DEFAULT_MODEL || preset.defaultModel,
+    apiKey,
+    ...(endpoint ? { endpoint } : {}),
+  };
 }
 
 const DEFAULTS: StoredConfig = {
@@ -52,7 +50,16 @@ const DEFAULTS: StoredConfig = {
 
 export async function getConfig(): Promise<StoredConfig> {
   const stored = await chrome.storage.local.get(Object.keys(DEFAULTS));
-  return { ...DEFAULTS, ...dropUndefined(stored) } as StoredConfig;
+  const merged = { ...DEFAULTS, ...dropUndefined(stored) } as StoredConfig;
+  return { ...merged, llm: normalizeStoredLLM(stored.llm) };
+}
+
+/** Content scripts need provider/model identity for cache and diagnostics, but
+ * API calls happen in the service worker. Return a keyless copy so a BYOK
+ * secret never enters the page-adjacent execution context. */
+export async function getContentConfig(): Promise<StoredConfig> {
+  const config = await getConfig();
+  return { ...config, llm: { ...config.llm, apiKey: "" } };
 }
 
 export async function setConfig(patch: Partial<StoredConfig>): Promise<void> {
@@ -64,5 +71,46 @@ function dropUndefined(value: Record<string, unknown>): Record<string, unknown> 
     Object.entries(value).filter(
       (entry): entry is [string, unknown] => entry[1] !== undefined,
     ),
+  );
+}
+
+/** Reads v0.2's three-provider objects and future provider-registry configs.
+ * Unknown/corrupt values fall back to the build seed instead of crashing the
+ * popup or content script. Legacy model aliases are intentionally preserved;
+ * the registry resolves them at request time. */
+function normalizeStoredLLM(value: unknown): LLMConfig {
+  if (typeof value !== "object" || value === null) return DEFAULTS.llm;
+  const candidate = value as Record<string, unknown>;
+  if (!isProviderId(candidate.provider)) return DEFAULTS.llm;
+  const preset = getProviderPreset(candidate.provider);
+  const protocol = isProtocol(candidate.protocol)
+    ? candidate.protocol
+    : undefined;
+  const auth = isAuth(candidate.auth) ? candidate.auth : undefined;
+  return {
+    provider: candidate.provider,
+    model:
+      typeof candidate.model === "string"
+        ? candidate.model
+        : preset.defaultModel,
+    apiKey: typeof candidate.apiKey === "string" ? candidate.apiKey : "",
+    ...(typeof candidate.endpoint === "string"
+      ? { endpoint: candidate.endpoint }
+      : {}),
+    ...(protocol ? { protocol } : {}),
+    ...(auth ? { auth } : {}),
+  };
+}
+
+function isProtocol(value: unknown): value is LLMProtocol {
+  return value === "openai-chat" || value === "anthropic-messages";
+}
+
+function isAuth(value: unknown): value is LLMAuth {
+  return (
+    value === "bearer" ||
+    value === "x-api-key" ||
+    value === "api-key" ||
+    value === "none"
   );
 }

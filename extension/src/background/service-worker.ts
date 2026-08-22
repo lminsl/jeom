@@ -17,9 +17,14 @@ import {
 } from "../lib/prompt-improver";
 import {
   callLLMDirect,
+  type LLMConfig,
   type SelectRootRequestMsg,
   type SelectRootResponseMsg,
 } from "../lib/selector-llm";
+import {
+  listProviderModels,
+  testProviderConnection,
+} from "../lib/llm-client";
 import { getConfig } from "../lib/storage";
 import type { NoteGenTelemetry, SentenceInput } from "../lib/api";
 
@@ -48,6 +53,24 @@ interface ImprovePromptRequest {
 
 type ImprovePromptResponse =
   | ({ ok: true } & PromptImprovementResult)
+  | { ok: false; error: string };
+
+interface ListProviderModelsRequest {
+  type: "LIST_PROVIDER_MODELS_REQUEST";
+  llm: LLMConfig;
+}
+
+type ListProviderModelsResponse =
+  | { ok: true; models: string[] }
+  | { ok: false; error: string };
+
+interface TestProviderRequest {
+  type: "TEST_PROVIDER_REQUEST";
+  llm: LLMConfig;
+}
+
+type TestProviderResponse =
+  | { ok: true; text: string }
   | { ok: false; error: string };
 
 chrome.runtime.onMessage.addListener(
@@ -113,7 +136,8 @@ chrome.runtime.onMessage.addListener(
     if (msg?.type !== "SELECT_ROOT_REQUEST") return false;
     void (async () => {
       try {
-        const text = await callLLMDirect(msg.llm, msg.prompt);
+        const cfg = await getConfig();
+        const text = await callLLMDirect(cfg.llm, msg.prompt);
         const response: SelectRootResponseMsg = { ok: true, text };
         sendResponse(response);
       } catch (err) {
@@ -125,6 +149,46 @@ chrome.runtime.onMessage.addListener(
       }
     })();
     return true; // keep the channel open for the async response
+  },
+);
+
+chrome.runtime.onMessage.addListener(
+  (msg: ListProviderModelsRequest, _sender, sendResponse) => {
+    if (msg?.type !== "LIST_PROVIDER_MODELS_REQUEST") return false;
+    void (async () => {
+      try {
+        const models = await listProviderModels(msg.llm);
+        const response: ListProviderModelsResponse = { ok: true, models };
+        sendResponse(response);
+      } catch (err) {
+        const response: ListProviderModelsResponse = {
+          ok: false,
+          error: err instanceof Error ? err.message : String(err),
+        };
+        sendResponse(response);
+      }
+    })();
+    return true;
+  },
+);
+
+chrome.runtime.onMessage.addListener(
+  (msg: TestProviderRequest, _sender, sendResponse) => {
+    if (msg?.type !== "TEST_PROVIDER_REQUEST") return false;
+    void (async () => {
+      try {
+        const text = await testProviderConnection(msg.llm);
+        const response: TestProviderResponse = { ok: true, text };
+        sendResponse(response);
+      } catch (err) {
+        const response: TestProviderResponse = {
+          ok: false,
+          error: err instanceof Error ? err.message : String(err),
+        };
+        sendResponse(response);
+      }
+    })();
+    return true;
   },
 );
 

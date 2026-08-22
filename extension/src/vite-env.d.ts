@@ -14,6 +14,7 @@ interface ImportMetaEnv {
   readonly VITE_DEFAULT_PROVIDER?: string;
   readonly VITE_DEFAULT_MODEL?: string;
   readonly VITE_DEFAULT_API_KEY?: string;
+  readonly VITE_DEFAULT_ENDPOINT?: string;
   readonly VITE_DEFAULT_FOUNDRY_ENDPOINT?: string;
 }
 

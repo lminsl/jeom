@@ -1,4 +1,5 @@
 import { getConfig } from "../lib/storage";
+import { providerNeedsApiKey } from "../lib/provider-registry";
 import { logClientEvent } from "../lib/telemetry";
 import { checkReleaseStatus, type ReleaseStatus } from "../lib/version-check";
 
@@ -159,7 +160,7 @@ async function runActivate(): Promise<void> {
   }
 
   const cfg = await getConfig();
-  if (!cfg.llm.apiKey) {
+  if (providerNeedsApiKey(cfg.llm) && !cfg.llm.apiKey) {
     statusEl.textContent = "No API key set. Open Settings ↓";
     statusEl.classList.add("err");
     return;

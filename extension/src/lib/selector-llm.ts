@@ -11,24 +11,10 @@
  *  results are NOT cached (so next visit retries the LLM).
  */
 
-import {
-  callAnthropic,
-  callAnthropicFoundry,
-  type AnthropicModelName,
-} from "./anthropic-client";
-import { callOpenAI, type OpenAIModelName } from "./openai-client";
+import { callLLM } from "./llm-client";
+import type { LLMConfig } from "./provider-registry";
 
-export type LLMConfig =
-  | { provider: "anthropic"; model: AnthropicModelName; apiKey: string }
-  | {
-      provider: "anthropic-foundry";
-      /** Deployment name as configured in Azure AI Foundry. */
-      model: string;
-      apiKey: string;
-      /** Full URL, e.g. https://<resource>.services.ai.azure.com/anthropic/v1/messages */
-      endpoint: string;
-    }
-  | { provider: "openai"; model: OpenAIModelName; apiKey: string };
+export type { LLMConfig } from "./provider-registry";
 
 export type SelectorSource = "llm" | "cache" | "heuristic-fallback";
 
@@ -148,24 +134,7 @@ export async function callLLMDirect(
   prompt: string,
   opts: CallLLMDirectOpts = {},
 ): Promise<string> {
-  const { maxTokens } = opts;
-  if (llm.provider === "anthropic") {
-    return callAnthropic({ prompt, model: llm.model, apiKey: llm.apiKey, maxTokens });
-  }
-  if (llm.provider === "anthropic-foundry") {
-    return callAnthropicFoundry({
-      prompt,
-      deployment: llm.model,
-      apiKey: llm.apiKey,
-      endpoint: llm.endpoint,
-      maxTokens,
-    });
-  }
-  if (llm.provider === "openai") {
-    return callOpenAI({ prompt, model: llm.model, apiKey: llm.apiKey, maxTokens });
-  }
-  const _exhaustive: never = llm;
-  throw new Error(`Unknown LLM provider: ${JSON.stringify(_exhaustive)}`);
+  return callLLM(llm, prompt, opts);
 }
 
 // --- Worker message protocol -----------------------------------------------
@@ -173,7 +142,6 @@ export async function callLLMDirect(
 export interface SelectRootRequestMsg {
   type: "SELECT_ROOT_REQUEST";
   prompt: string;
-  llm: LLMConfig;
 }
 
 export type SelectRootResponseMsg =
@@ -184,10 +152,10 @@ export type SelectRootResponseMsg =
  *  performs the actual fetch with the API key. Keeps the key out of the
  *  page-adjacent JS context. */
 async function callLLMViaWorker(
-  llm: LLMConfig,
+  _llm: LLMConfig,
   prompt: string,
 ): Promise<string> {
-  const req: SelectRootRequestMsg = { type: "SELECT_ROOT_REQUEST", prompt, llm };
+  const req: SelectRootRequestMsg = { type: "SELECT_ROOT_REQUEST", prompt };
   const resp = (await chrome.runtime.sendMessage(req)) as
     | SelectRootResponseMsg
     | undefined;
