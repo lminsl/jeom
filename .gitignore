@@ -25,6 +25,7 @@ extension/test/*
 !extension/test/e2e-insitu.ts
 !extension/test/e2e-popup-retry.ts
 !extension/test/e2e-prompt-lab.ts
+!extension/test/e2e-options.ts
 !extension/test/smoke-urls.txt
 !extension/test/dom-rerender-repro-urls.txt
 

@@ -16,7 +16,7 @@ import {
 import { renderReader } from "../reader/render";
 import { findArticleRoot, removeCacheEntry } from "../lib/selector-llm";
 import { injectMarkers, restoreExistingDots } from "../marker/inject";
-import { getConfig, type StoredConfig } from "../lib/storage";
+import { getContentConfig, type StoredConfig } from "../lib/storage";
 import { logSession } from "../lib/telemetry";
 import { saveDebugSession } from "../lib/debug-session";
 import type { NoteGenTelemetry, SentenceInput } from "../lib/api";
@@ -37,7 +37,7 @@ const MAX_SENTENCES = 80;
 // --- developer-mode trace -------------------------------------------------
 
 let cachedDeveloperMode = false;
-void getConfig().then((cfg) => {
+void getContentConfig().then((cfg) => {
   cachedDeveloperMode = cfg.developerMode;
 });
 chrome.storage.onChanged.addListener((changes) => {
@@ -78,7 +78,7 @@ chrome.runtime.onMessage.addListener(
 );
 
 async function activate(): Promise<void> {
-  const cfg = await getConfig();
+  const cfg = await getContentConfig();
   if (cfg.renderMode === "in-situ") {
     await activateInSitu(cfg);
   } else {
@@ -89,12 +89,6 @@ async function activate(): Promise<void> {
 // --- in-situ path (v1) -----------------------------------------------------
 
 async function activateInSitu(cfg: StoredConfig): Promise<void> {
-  if (!cfg.llm.apiKey) {
-    throw new Error(
-      "in-situ mode needs an LLM API key. Set one in the extension Options page.",
-    );
-  }
-
   traceLog("in-situ: selector LLM call…");
   const sel = await findArticleRoot({
     document,

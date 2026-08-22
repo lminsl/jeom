@@ -39,10 +39,22 @@ reading rhythm remain in charge.
 
 ## Built around your own model
 
-Jeom is BYOK (bring your own key). Choose Anthropic, OpenAI, or Anthropic via
-Azure AI Foundry in the Options page; the extension sends article text only to
-the provider you select. Your API key is stored locally in Chrome, not on a
-Jeom server.
+Jeom is BYOK (bring your own key), but it is not tied to one model company.
+The Connections page includes presets for OpenRouter, OpenAI, Anthropic,
+Google Gemini, Groq, Mistral, DeepSeek, Together, xAI, Cerebras, Fireworks,
+Azure OpenAI, and Anthropic via Azure AI Foundry. Ollama and LM Studio work
+locally without a cloud key.
+
+For services Jeom does not name yet, add any OpenAI-compatible or
+Anthropic-compatible endpoint and choose its authentication header. Model IDs
+remain editable, and Jeom can ask compatible services for their available
+models, so a new model release does not require a Jeom update. OpenRouter is
+the simplest broad-coverage option when you want one key to reach models from
+multiple makers.
+
+The extension sends article text only to the connection you select. Your API
+key is stored in Chrome on your device, never placed in the article's content
+script, and never proxied through a Jeom server.
 
 ## Install from source
 
@@ -61,8 +73,8 @@ Then:
 1. Visit `chrome://extensions`.
 2. Turn on **Developer mode**.
 3. Choose **Load unpacked** and select `jeom/extension/dist`.
-4. Open Jeom’s **Settings** from its toolbar menu, choose a provider and model,
-   enter your API key, and save.
+4. Open Jeom’s **Settings** from its toolbar menu, choose a service and model,
+   enter your API key (or choose a local connection), test it, and save.
 5. Visit a long-form article and click the Jeom toolbar icon.
 
 Jeom works best on article pages, essays, and blog posts. It intentionally

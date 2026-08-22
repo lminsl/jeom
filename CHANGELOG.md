@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.3.0 — Bring your own model
+
+- Connect Jeom to 17 hosted, cloud, local, and custom LLM services from one
+  settings page, including OpenRouter, OpenAI, Anthropic, Gemini, Ollama, and
+  OpenAI- or Anthropic-compatible endpoints.
+- Discover available models and test a connection before saving it.
+- Use a simpler, functional settings layout with in-situ dots selected by
+  default and advanced controls kept out of the main flow.
+- Keep API keys in extension-local storage and out of article-page content
+  scripts while routing every reading request through the background worker.
+- Preserve existing three-provider settings and legacy Anthropic model aliases
+  during the upgrade.
+
 ## v0.2.0 — Public source release
 
 - Published Jeom as an experimental, source-installable Chrome extension.

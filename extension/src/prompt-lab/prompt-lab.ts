@@ -15,6 +15,7 @@ import type {
   PromptImprovementResult,
 } from "../lib/prompt-improver";
 import { getConfig } from "../lib/storage";
+import { providerNeedsApiKey } from "../lib/provider-registry";
 
 interface AnnotateResponse {
   ok: boolean;
@@ -347,7 +348,7 @@ async function loadUrl(): Promise<void> {
     if (!cfg.developerMode) {
       throw new Error("Enable Developer Mode before loading URLs into Prompt Lab.");
     }
-    if (!cfg.llm.apiKey) {
+    if (providerNeedsApiKey(cfg.llm) && !cfg.llm.apiKey) {
       throw new Error("Set an LLM API key before loading URLs into Prompt Lab.");
     }
 

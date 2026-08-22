@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import { getConfig, setConfig } from "./storage";
+import { getConfig, getContentConfig, setConfig } from "./storage";
 
 interface ChromeStorageArea {
   data: Record<string, unknown>;
@@ -42,5 +42,30 @@ describe("getConfig", () => {
 
     expect(cfg.shareDogfoodTelemetry).toBe(false);
     expect(storage.data.shareDogfoodTelemetry).toBe(false);
+  });
+
+  test("keeps legacy provider settings readable", async () => {
+    installChromeStorage({
+      llm: { provider: "anthropic", model: "haiku", apiKey: "sk-ant-old" },
+    });
+
+    const cfg = await getConfig();
+
+    expect(cfg.llm).toMatchObject({
+      provider: "anthropic",
+      model: "haiku",
+      apiKey: "sk-ant-old",
+    });
+  });
+
+  test("removes the API key from content-script configuration", async () => {
+    installChromeStorage({
+      llm: { provider: "openrouter", model: "model", apiKey: "sk-or-secret" },
+    });
+
+    const cfg = await getContentConfig();
+
+    expect(cfg.llm.apiKey).toBe("");
+    expect(cfg.llm.provider).toBe("openrouter");
   });
 });
